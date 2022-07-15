@@ -1,0 +1,12 @@
+name: "Donald Anderson"
+navbar:
+  title: "Don Anderson"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "AboutMe"
+      href: About-Me.html
+    - text: "Case Study 1"
+      href: CaseStudy1_EDA.html
+    - text: "Case Study Analysis"
+      href: The Beers Dataset RSHINY.html
