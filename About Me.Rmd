@@ -1,0 +1,18 @@
+---
+output: html_document
+---
+
+#### About me
+I'm a data engineer with 10+ years of management experience. I am a self-motivated, 
+agile, and highly competent analytics professional with repeated success managing 
+large sets of data and performing a range of quality checks to ensure accurate 
+interpretations and results. I have advanced experience with data mining, data 
+pre-processing (i.e. class labeling, data cleansing, dealing with missing values, 
+etc.), and case specific. In addition, I'm highly skilled at identifying metrics 
+and KPIs, creating reports and dashboards to extract meaningful business insights. 
+My interests include corporate data governance, data science, statistics, and 
+using visualization tools to provide meaningful business insights.
+
+#### Links
+- [LinkedIn](https://www.linkedin.com/in/dlanderson6/)
+- [Github](https://github.com/DonAnderson1)
