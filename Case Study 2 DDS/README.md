@@ -9,9 +9,13 @@ Talent management is defined as the iterative process of developing and retainin
 DDS Analytics specializes in talent management solutions for Fortune 100 companies. Their client, Frito Lay has provided the analytics company with a dataset to conduct data analysis that will identify factors that lead to attrition. DDS Analytics will present the executive staff with evidence-based analysis of the top three factors that contribute to employee turnover. Job-role specific trends that exist in the dataset will be shared in their findings as well as other interesting trends and observations from their research.
 
 ## Research Materials
--Case Study 2 Data csv file
--Predicted Attrition: Case2PredictionsAnderson Attrition.csv
--Predicted Salaries: Case2PredictionsAnderson Salary.csv
--Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Attrition.csv
--Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Salary.csv
+Case Study 2 Data csv file
+
+Predicted Attrition: Case2PredictionsAnderson Attrition.csv
+
+Predicted Salaries: Case2PredictionsAnderson Salary.csv
+
+Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Attrition.csv
+
+Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Salary.csv
 
