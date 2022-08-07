@@ -19,3 +19,7 @@ Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Attrition.c
 
 Competition Set (Data Set of 300 Observations): CaseStudy2CompSet No Salary.csv
 
+Case Study 2 DDS Presentation in PPT
+
+Case Study 2 DDS Rmarkdown file
+
