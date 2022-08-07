@@ -1,0 +1,232 @@
+---
+title: "Case Study 2"
+author: "Donald Anderson"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r, warning=FALSE, message=FALSE}
+library(dplyr)
+library(ggplot2)
+library(caret)
+library(Metrics)
+library(rpart)
+library(readxl)
+```
+
+## Challenge
+
+## Talent management is defined as the iterative process of developing and retaining employees. It may include workforce planning, employee training 
+## programs, identifying high-potential employees and reducing/preventing voluntary employee turnover (attrition). In order to gain a competitive edge 
+## over its competition, the CEO and CFO of Frito Lay is planning to leverage data science for talent management. Frito Lays’ leadership team has determined that 
+## predicting employee turnover will be its first application of data science for talent management.
+
+## Solution
+
+## DDS Analytics specializes in talent management solutions for Fortune 100 companies. Their client, Frito Lay has provided the analytics company with a 
+## dataset to conduct data analysis that will identify factors that lead to attrition. DDS Analytics will present the executive staff with evidence-based 
+## analysis of the top three factors that contribute to employee turnover. Job-role specific trends that exist in the dataset will be shared in their 
+## findings as well as other interesting trends and observations from their research.
+
+```{r}
+data <- read.csv(file.choose(), header = TRUE)
+head(data)
+```
+
+## Exploratory Data Analysis:
+
+## Box Plots of Attrition vs Monthly Income, Years at Company, & Age
+```{r}
+par(mfrow=c(1,1))
+boxplot(data$MonthlyIncome ~ data$Attrition, 
+        main = "Monthly Income vs Attrition Status",
+        col = "purple",
+        xlab = "Attrition",
+        ylab = "Monthly Income")
+
+boxplot(data$YearsAtCompany ~ data$Attrition, 
+        main = "Years At Company vs Attrition Status",
+        col = "red",
+        xlab = "Attrition",
+        ylab = "Years At Company")
+
+boxplot(data$Age ~ data$Attrition,
+        main = "Age vs Attrition Status",
+        col = "steel blue",
+        xlab = "Attrition",
+        ylab = "Age")
+```
+
+## Pie Chart of Attrition by Department
+```{r}
+data_1 <- data %>%
+  filter(Attrition == "Yes")
+temp <- as.data.frame(table(data_1$Department))
+colnames(temp) <- c("Department", "Count")
+temp <- temp %>%
+  mutate(Proportion = round((Count / sum(Count)) * 100, 2))
+
+ggplot(temp, 
+       aes(x = "", 
+           y = Proportion, 
+           fill = Department)) +
+  geom_col() +
+  geom_text(aes(label = round(Proportion, 2)),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  labs(title = "Department Wide Attrition Percentage")
+```
+
+## Barplot by Job Role
+```{r}
+temp_1 <- as.data.frame(table(data_1$JobRole))
+colnames(temp_1) <- c("Job Role", "Count")
+temp_1 <- temp_1 %>%
+  mutate(Proportion = round((Count / sum(Count)) * 100, 2))
+
+ggplot(data = temp_1, 
+       mapping = aes(x = `Job Role`, 
+                     y = Proportion, 
+                     fill = `Job Role`)) +
+  geom_bar(stat="identity", 
+           position = "dodge") +
+  theme(axis.text.x = element_text(angle=90, hjust=1)) +
+  labs(title = "Attrition's Percentage By Job Role")
+```
+## Pie Chart of Attrition by Avg. Distance from Home
+```{r}
+temp_2 <- data %>%
+  group_by(Attrition) %>%
+  summarise(Average_Distance = mean(DistanceFromHome, na.rm = T))
+temp_2$Average_Distance <- round(temp_2$Average_Distance , 2)
+
+ggplot(temp_2, 
+       aes(x = "", 
+           y = Average_Distance, 
+           fill = Attrition)) +
+  geom_col() +
+  geom_text(aes(label = round(Average_Distance, 2)),
+            position = position_stack(vjust = 0.5)) +
+  coord_polar(theta = "y") +
+  labs(title = "Attrition Status By Avg Distance from Home")
+```
+
+## Predictive Model
+
+## Data Preparation:
+
+```{r}
+colSums(is.na(data))
+```
+```{r}
+data <- data[, 2:36]
+str(data)
+```
+
+```{r}
+data$Over18 <- as.factor(data$Over18)
+data$OverTime <- as.factor(data$OverTime)
+data$MaritalStatus <- as.factor(data$MaritalStatus)
+data$JobRole <- as.factor(data$JobRole)
+data$Gender <- as.factor(data$Gender)
+data$EducationField <- as.factor(data$EducationField)
+data$Department <- as.factor(data$Department)
+data$BusinessTravel <- as.factor(data$BusinessTravel)
+data$Attrition <- as.factor(data$Attrition)
+```
+
+```{r}
+lapply(data, n_distinct)
+```
+
+```{r}
+data <- data[, -which(names(data) %in% c("Over18", 
+                                         "StandardHours"))]
+```
+## Data Partition:
+
+```{r}
+set.seed(123)
+split1<- sample(c(rep(0, 0.7 * nrow(data)), 
+                  rep(1, 0.3 * nrow(data))))
+train <- data[split1 == 0, ] 
+test <- data[split1== 1, ]
+```
+## Decision Tree Classifier:
+```{r}
+library(rpart)
+fit_DT <- rpart(Attrition ~.,
+                data = train,
+                method = "class")
+summary(fit_DT)
+```
+## Evaluate On Test Set & Provided Test Set:
+
+## Perform prediction on test set from data splitting step
+```{r}
+pred <- predict(fit_DT, 
+                test,
+                type = "class")
+cm <- table(pred, test$Attrition)
+confusionMatrix(cm)
+```
+# Load attrition data without labels.
+```{r}
+data_attrition <- read.csv(file.choose(), header = TRUE)
+```
+
+## Predict the Attrition and write file as csv
+```{r}
+pred <- predict(fit_DT, 
+                data_attrition,
+                type = "class")
+data_attrition_res <- as.data.frame(pred)
+data_attrition_res$ID <- data_attrition$ID
+head(data_attrition_res)
+
+write.csv(data_attrition_res, "Case2PredictionsAnderson Attrition.csv", row.names = FALSE)
+```
+
+## Regression for Salary
+
+## Build Regression Model:
+```{r}
+model_regression <- lm(MonthlyIncome ~., 
+                       data = train)
+summary(model_regression)
+```
+
+## Perform predictions and calculate RMSE
+```{r}
+pred <- predict(model_regression, 
+                test)
+rmse(pred, 
+     test$MonthlyIncome)
+```
+
+
+# Read in data from Excel file
+```{r}
+data_test <- read_excel(file.choose())
+
+# Perform prediction and save results as csv.
+pred <- predict(model_regression, 
+                data_test)
+
+salary_res <- as.data.frame(pred)
+salary_res$ID <- data_test$ID
+head(salary_res)
+
+write.csv(salary_res, "Case2PredictionsAnderson Salary.csv", row.names = FALSE)
+```
+
+
+
+
+
+
+
